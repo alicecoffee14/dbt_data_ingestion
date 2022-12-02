@@ -33,7 +33,7 @@ using_clause AS (
             raw:dynamodb:NewImage:bool:BOOL::boolean as bool, 
             approximate_creation_time -- we need to add the creation date only to merge recent items
 
-        FROM {{ ref('stream_logs') }}
+        FROM {{ ref('stg_stream_logs') }}
         WHERE TRUE
             AND table_name = 'users_test'
                 
@@ -59,7 +59,7 @@ using_clause AS (
 
         SELECT *,
                date_part(epoch_millisecond, current_timestamp())::INT AS approximate_creation_time
-        FROM joko.transformed_schema.users_historic
+        FROM joko.transformed_schema.users_test_historic
         ), 
     ranking_query AS ( 
         /*

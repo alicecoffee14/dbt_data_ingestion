@@ -1,0 +1,11 @@
+version: 2
+
+sources:
+  - name: RAW_SNOWPIPE_INGESTION 
+    description: poc_ingestion test source
+    database: JOKO
+    schema: RAW_SNOWPIPE_INGESTION 
+
+    tables:
+      - name: POC_INGESTION
+        description: poc_ingestion table
