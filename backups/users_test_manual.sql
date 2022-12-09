@@ -59,7 +59,7 @@ using_clause AS (
 
         SELECT *,
                date_part(epoch_millisecond, current_timestamp())::INT AS approximate_creation_time
-        FROM joko.transformed_schema.users_test_historic
+        FROM joko.transformed_schema.users_test
         ), 
     ranking_query AS ( 
         /*

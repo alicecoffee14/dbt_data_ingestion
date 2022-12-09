@@ -9,3 +9,16 @@ sources:
     tables:
       - name: POC_INGESTION
         description: poc_ingestion table
+
+  - name: TRANSFORMED_SCHEMA 
+    description: historic table test source
+    database: JOKO
+    schema: TRANSFORMED_SCHEMA 
+
+    tables:
+      - name: users_test_historic
+        description: users_test historic
+      - name: TWO_PRIMARY_KEYS_HISTORIC
+        description: two_primary_keys historic
+      - name: historic_tables_schema
+        description: schema of the historic tables, used to the union with new logs 

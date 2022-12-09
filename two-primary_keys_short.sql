@@ -3,10 +3,10 @@
 /*-----------------------------------------------------------------------*/
 
 -- parameters to set differently for each table: these must be set by hand
-{% set dynamodb_table_name = 'users_test' %}
-{% set historic_table_name = 'users_test' %}
+{% set dynamodb_table_name = 'two_primary_keys' %}
+{% set historic_table_name = 'two_primary_keys' %}
 {% set primary_key = 'userid' %}
-{% set sort_key = '' %}
+{% set sort_key = 'timestamp' %}
 
 -- these below can be set by hand if needed but they are automatically computed below
 --{% set table_fields = ['userid', 'timestamp', 'test'] %}
@@ -59,24 +59,19 @@ Parameters of the incremental model:
   of data. The exact mechanics of how that update/replace takes place will vary depending on incremental strategy.
   If the unique_key is not present in the "old" data, dbt will insert the entire row into the table.
 - incremental_strategy: with the merge strategy with specified a unique_key, by default, dbt will entirely overwrite 
-  matched rows with new values. Note that the merge statemet is applied at the end of the whole query within the model
+  matched rows with new values.
 - on_schema_change: enable additional control when incremental model columns change. append_new_columns: append new columns 
   to the existing table. Note that this setting does not remove columns from the existing table that are not present in the 
   new data. There is no backfill values in old records for newly added columns but it can be done with a full refresh run. 
-- post_hook: hooks are snippets of SQL that are executed at different times. post-hook: executed after a model, seed or snapshot is built.
-  (on-run-end: executed at the end of dbt run). We implement the hook to eliminate DELETEs only after the merge logic is completed.
-  Note that you can pass multiple sql statement in the post_hook as an array
 */
 {{
     config(
         materialized='incremental',
         unique_key = unique_primary_key,
         incremental_strategy='merge', 
-        on_schema_change='append_new_columns',
-        post_hook = ["DELETE from {{this}} where to_be_deleted = TRUE"
-                    , "ALTER TABLE {{this}} DROP COLUMN to_be_deleted "]
+        on_schema_change='append_new_columns'
     )
 }}
 /*------------------------------------------------------------------------------------------------------*/
 /*    Call the macro of the incremental model for ingestion and transformation                          */
-{{ ingestion_and_transformation(dynamodb_table_name, historic_table_name, primary_key, sort_key, table_fields, table_fields_type, table_fields_historic, table_fields_type_SF) }}
+{{ short(dynamodb_table_name, historic_table_name, primary_key, sort_key, table_fields, table_fields_type, table_fields_historic, table_fields_type_SF) }}
